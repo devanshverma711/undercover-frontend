@@ -296,7 +296,10 @@ export default function Lobby() {
       return;
     }
 
-    const socket = io(BACKEND);
+    const socket = io(BACKEND, {
+  transports: ["polling"],
+});
+
     socketRef.current = socket;
 
     socket.on("connect", () => {
