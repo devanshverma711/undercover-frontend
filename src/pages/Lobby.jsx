@@ -25,7 +25,7 @@ export default function Lobby() {
   const [myWord, setMyWord] = useState(null);
 
   useEffect(() => {
-    const s = io(BACKEND, { transports: ["websocket", "polling"] });
+    const s = io(BACKEND);
     setSocket(s);
 
     s.on("connect", () => s.emit("join-room", { room: roomCode, name }));
