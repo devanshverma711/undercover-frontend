@@ -94,6 +94,7 @@ export default function Home() {
 
         <button style={styles.secondaryBtn} onClick={joinRoom}>
           Join Room
+          disabled={!name || !room}
         </button>
 
         {/* How to Play */}
