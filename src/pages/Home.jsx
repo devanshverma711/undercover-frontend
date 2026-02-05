@@ -31,7 +31,10 @@ export default function Home() {
           onChange={e => setName(e.target.value)}
         />
 
-        <button style={styles.primaryBtn} onClick={createRoom}>
+        <button style={styles.primaryBtn} 
+        onMouseDown={e => e.currentTarget.style.transform = "scale(0.98)"}
+        onMouseUp={e => e.currentTarget.style.transform = "scale(1)"} 
+        onClick={createRoom}>
           Create Room
         </button>
 
@@ -44,7 +47,10 @@ export default function Home() {
           onChange={e => setRoom(e.target.value)}
         />
 
-        <button style={styles.primaryBtn} onClick={joinRoom} >
+        <button style={styles.primaryBtn}
+        onMouseDown={e => e.currentTarget.style.transform = "scale(0.98)"}
+        onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}
+        onClick={joinRoom} >
           Join Room
           
         </button>
@@ -114,19 +120,22 @@ const styles = {
     height: 48,  
     marginBottom: 12,
     borderRadius: 8,
+    boxSizing: "border-box",
     border: "1px solid #ccc",
     fontSize: 16
   },
   primaryBtn: {
     width: "100%",
-    padding: 12,
+    padding: "0 12",
     height: 48,  
     background: "#667eea",
     color: "#fff",
-    border: "none",
+    border: "1px solid transparent",
     borderRadius: 8,
+    boxSizing: "border-box" ,
     fontSize: 16,
-    cursor: "pointer"
+    cursor: "pointer",
+    transition: "transform 0.1s ease, box-shadow 0.1s ease"
   },
   secondaryBtn: {
     width: "100%",
