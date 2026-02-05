@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
+const clickSound = new Audio("/Welcome to the GAme.mp3");
 
 const TAGLINES = [
   "Trust no one.",
@@ -23,7 +24,22 @@ const TAGLINES = [
   "Every detail matters.",
   "Silence is safe. Speech is a risk.",
   "Truth is a luxury.",
-  "Mind the gap in your story."
+  "Mind the gap in your story.",
+  "Welcome to the snake pit.",
+  "Eat or be eaten.",
+  "The truth is a death sentence.",
+  "Dirty hands. Clean words.",
+  "Sell the lie. Buy your life.",
+  "Betrayal is the only constant.",
+  "Kill the lights. Find the liar.",
+  "Sift through the wreckage.",
+  "Stab them with a smile.",
+  "Nobody leaves clean.",
+  "Trust is for the dead.",
+  "Everyone is a target.",
+  "Bleed them dry with words.",
+  "The walls have ears.",
+  "Mercy is a mistake."
 ];
 
 export default function Home() {
@@ -31,16 +47,25 @@ export default function Home() {
   const [room, setRoom] = useState("");
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [taglineIndex, setTaglineIndex] = useState(0);
-
-useEffect(() => {
-  const interval = setInterval(() => {
-    setTaglineIndex(prev => (prev + 1) % TAGLINES.length);
-  }, 2500);
-
-  return () => clearInterval(interval);
-}, []);
-
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setTaglineIndex(Math.floor(Math.random() * TAGLINES.length));
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTaglineIndex(prev => {
+        let next;
+        do {
+          next = Math.floor(Math.random() * TAGLINES.length);
+        } while (next === prev);
+        return next;
+      });
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, []);
 
   function createRoom() {
     if (!name) return alert("Enter your name");
@@ -56,7 +81,10 @@ useEffect(() => {
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        <h1 style={styles.title}>🎭 Undercover</h1>
+        <h1 style={styles.title} onClick={() => {
+    clickSound.currentTime = 0;
+    clickSound.play();
+  }} >🎭 Undercover</h1>
         <p style={styles.tagline}>
   {TAGLINES[taglineIndex]}
 </p>
@@ -146,7 +174,9 @@ const styles = {
   },
   title: {
     marginBottom: 5,
-    color: "#1f2937"
+    color: "#1f2937",
+    cursor: "pointer",
+    userSelect: "none"
   },
   subtitle: {
     marginBottom: 25,
