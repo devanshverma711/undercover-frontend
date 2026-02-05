@@ -1,10 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
+
+
+const TAGLINES = [
+  "Trust no one.",
+  "Someone is lying.",
+  "One of you is the Undercover.",
+  "Speak carefully.",
+  "Bluff. Guess. Survive.",
+  "Blend in or blow your cover.",
+  "Decode the lie.",
+  "Outwit. Outlast. Out-talk.",
+  "Your secret is their victory.",
+  "One word can end it all.",
+  "The traitor is listening.",
+  "A wolf in word’s clothing.",
+  "Spot the odd one out.",
+  "Close the circle. Find the leak.",
+  "Hiding in plain sight.",
+  "Your words are your weapon.",
+  "Every detail matters.",
+  "Silence is safe. Speech is a risk.",
+  "Truth is a luxury.",
+  "Mind the gap in your story."
+];
 
 export default function Home() {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
   const [showHowToPlay, setShowHowToPlay] = useState(false);
+  const [taglineIndex, setTaglineIndex] = useState(0);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setTaglineIndex(prev => (prev + 1) % TAGLINES.length);
+  }, 2500);
+
+  return () => clearInterval(interval);
+}, []);
+
   const navigate = useNavigate();
 
   function createRoom() {
@@ -22,7 +57,10 @@ export default function Home() {
     <div style={styles.page}>
       <div style={styles.card}>
         <h1 style={styles.title}>🎭 Undercover</h1>
-        <p style={styles.subtitle}>A social deduction party game</p>
+        <p style={styles.tagline}>
+  {TAGLINES[taglineIndex]}
+</p>
+
 
         <input
           style={styles.input}
@@ -174,6 +212,14 @@ const styles = {
     color: "#667eea",
     cursor: "pointer",
     fontSize: 14
-  }
+  },
+  tagline: {
+  marginBottom: 25,
+  color: "#6b7280",
+  fontSize: 14,
+  minHeight: "1.2em",
+  transition: "opacity 0.3s ease"
+}
+
 };
 
