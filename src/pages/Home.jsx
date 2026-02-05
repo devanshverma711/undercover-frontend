@@ -92,9 +92,9 @@ export default function Home() {
           onChange={e => setRoom(e.target.value)}
         />
 
-        <button style={styles.secondaryBtn} onClick={joinRoom}>
+        <button style={styles.primaryBtn} onClick={joinRoom} >
           Join Room
-          disabled={!name || !room}
+          
         </button>
 
         {/* How to Play */}
