@@ -98,7 +98,7 @@ export default function Lobby() {
             Room: <strong>{roomCode}</strong>
           </div>
         </div>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 12, alignItems: "center",flexWrap: "wrap",justifyContent: "flex-end" }}>
           <div style={{ color: "#ddd" }}>You: {name}</div>
           <div style={styles.phaseBadge}>{phaseText[game.phase]}</div>
 
@@ -115,17 +115,31 @@ export default function Lobby() {
                   myRole === "undercover" ? "#7b1f1f" : "#185e36",
               }}
             >
-              <div style={{ fontSize: 13 }}>ROLE</div>
-              <h3>{myRole.toUpperCase()}</h3>
+        
+              <div style={{ fontSize: 12, opacity: 0.8, letterSpacing: 1 }}>
+                {myRole.toUpperCase()}
+              </div>
+              
               <div style={{ fontSize: 20 }}>{myWord}</div>
+              <div style={{ 
+                fontSize: 28, 
+                fontWeight: 700, 
+                marginTop: 6 
+              }}>{myWord}</div>
             </div>
+            
           )}
 
           {game.message && (
             <div style={styles.messageBox}>
-              <strong>{game.message}</strong>
+              <strong>
+                {game.phase === "ended" && myRole === "undercover"
+                  ? "💀 You were caught by the civilians!"
+                  : game.message}
+              </strong>
             </div>
           )}
+
 
           <div
             style={{ cursor: "pointer" }}
@@ -236,11 +250,13 @@ const styles = {
     color: "#fff",
   },
   header: {
-    height: 64,
+    height: "auto",
     display: "flex",
     justifyContent: "space-between",
-    padding: "0 24px",
+    padding: "12px 16px",
     alignItems: "center",
+    flexWrap: "wrap",
+    gap: 8,
   },
   logo: { fontSize: 18, fontWeight: 700 },
   phaseBadge: {
