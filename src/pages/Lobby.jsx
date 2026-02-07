@@ -10,7 +10,7 @@ export default function Lobby() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [mySocketId, setMySocketId] = useState(null);
-  const { name, isHost } = state || {};
+  const { name } = state || {};
   const phaseText = {
     lobby: "Waiting for players",
     playing: "Discuss the word",
@@ -27,7 +27,8 @@ export default function Lobby() {
   const [myRole, setMyRole] = useState(null);
   const [myWord, setMyWord] = useState(null);
   const [copied, setCopied] = useState(false);
-  const aliveCount = game.players.filter(p => p.alive).length;
+  const aliveCount = game?.players?.filter(p => p.alive).length ?? 0;
+
 
 
   // 🔌 SOCKET SETUP (runs once)
