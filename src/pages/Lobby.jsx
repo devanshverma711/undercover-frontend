@@ -75,7 +75,7 @@ export default function Lobby() {
   }
 
   const socket = socketRef.current;
-
+  const isHostNow = game.hostId === socket?.id;
   const scoreboard = [...game.players].sort(
     (a, b) => (b.score || 0) - (a.score || 0)
   );
@@ -120,7 +120,7 @@ export default function Lobby() {
                 {myRole.toUpperCase()}
               </div>
               
-              <div style={{ fontSize: 20 }}>{myWord}</div>
+              
               <div style={{ 
                 fontSize: 28, 
                 fontWeight: 700, 
@@ -198,12 +198,12 @@ export default function Lobby() {
           </div>
 
           <div style={styles.actionsRow}>
-            {isHost && game.phase === "lobby" && (
+            {isHostNow  && game.phase === "lobby" && (
               <button onClick={() => socket.emit("startGame")}>
                 Start Game
               </button>
             )}
-            {isHost && game.phase === "playing" && (
+            {isHostNow  && game.phase === "playing" && (
               <button
                 onClick={() =>
                   socket.emit("start-voting", roomCode)
@@ -212,7 +212,7 @@ export default function Lobby() {
                 Start Voting
               </button>
             )}
-            {isHost && game.phase === "ended" && (
+            {isHostNow  && game.phase === "ended" && (
               <button
                 onClick={() =>
                   socket.emit("play-again", roomCode)
