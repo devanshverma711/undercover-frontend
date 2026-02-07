@@ -27,7 +27,10 @@ export default function Lobby() {
   const [myRole, setMyRole] = useState(null);
   const [myWord, setMyWord] = useState(null);
   const [copied, setCopied] = useState(false);
-  const aliveCount = game?.players?.filter(p => p.alive).length ?? 0;
+  const aliveCount = Array.isArray(game?.players)
+  ? game.players.filter(p => p?.alive).length
+  : 0;
+
 
 
 
@@ -86,9 +89,10 @@ export default function Lobby() {
 
   const socket = socketRef.current;
   const isHostNow = game.hostId === mySocketId;
-  const scoreboard = [...game.players].sort(
-    (a, b) => (b.score || 0) - (a.score || 0)
-  );
+  const scoreboard = Array.isArray(game?.players)
+  ? [...game.players].sort((a, b) => (b.score || 0) - (a.score || 0))
+  : [];
+
 
   function canClickTarget(p) {
     return (
