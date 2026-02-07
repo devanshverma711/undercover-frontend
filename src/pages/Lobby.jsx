@@ -171,7 +171,7 @@ export default function Lobby() {
 
 
           <div style={styles.playersGrid}>
-            {game.players.map((p) => {
+            {game?.players?.map?.((p) => {
               const isYou = p.name === name;
               const clickable = canClickTarget(p);
               return (
