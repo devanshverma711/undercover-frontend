@@ -72,7 +72,7 @@ export default function Lobby() {
       setMyWord(word);
     });
 
-    socket.on("error", (m) => alert(m));
+    socket.on("game-error", (m) => alert(m));
 
     return () => {
       socket.disconnect();
@@ -88,7 +88,7 @@ export default function Lobby() {
   }
 
   const socket = socketRef.current;
-  const isHostNow = game.hostId === mySocketId;
+  const isHostNow = game?.hostId === mySocketId;
   const scoreboard = Array.isArray(game?.players)
   ? [...game.players].sort((a, b) => (b.score || 0) - (a.score || 0))
   : [];
@@ -146,7 +146,7 @@ export default function Lobby() {
             
           )}
 
-          {game.message && (
+          {game?.message && (
             <div style={styles.messageBox}>
               <strong>
                 {game.phase === "ended" && myRole === "undercover"
