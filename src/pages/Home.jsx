@@ -139,6 +139,7 @@ export default function Home() {
                 <li>Each player gets a secret word</li>
                 <li>One player is the Undercover 😈</li>
                 <li>Discuss & vote to find the Undercover</li>
+                <li>Developed By Devansh🙂</li>
               </ul>
 
               <button

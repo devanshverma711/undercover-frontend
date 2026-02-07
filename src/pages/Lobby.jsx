@@ -9,6 +9,7 @@ export default function Lobby() {
   const { roomCode } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
+  const [mySocketId, setMySocketId] = useState(null);
   const { name, isHost } = state || {};
   const phaseText = {
     lobby: "Waiting for players",
@@ -26,6 +27,8 @@ export default function Lobby() {
   const [myRole, setMyRole] = useState(null);
   const [myWord, setMyWord] = useState(null);
   const [copied, setCopied] = useState(false);
+  const aliveCount = game.players.filter(p => p.alive).length;
+
 
   // 🔌 SOCKET SETUP (runs once)
   useEffect(() => {
@@ -41,11 +44,17 @@ export default function Lobby() {
     socketRef.current = socket;
 
     socket.on("connect", () => {
+      setMySocketId(socket.id);
       socket.emit("join-room", { room: roomCode, name });
     });
 
     socket.on("state", (data) => {
       setGame(data);
+       if (data.phase === "lobby") {
+        setMyRole(null);
+        setMyWord(null);
+      }
+
       if (data.phase !== "voting") {
         setVotes({});
         setSelected(null);
@@ -75,7 +84,7 @@ export default function Lobby() {
   }
 
   const socket = socketRef.current;
-  const isHostNow = game.hostId === socket?.id;
+  const isHostNow = game.hostId === mySocketId;
   const scoreboard = [...game.players].sort(
     (a, b) => (b.score || 0) - (a.score || 0)
   );
@@ -83,11 +92,13 @@ export default function Lobby() {
   function canClickTarget(p) {
     return (
       game.phase === "voting" &&
+      aliveCount > 2 &&
       p.alive &&
       p.name !== name &&
       !selected
     );
   }
+  
 
   return (
     <div style={styles.app}>
@@ -187,6 +198,7 @@ export default function Lobby() {
                   <strong>
                     {p.name}
                     {isYou ? " (You)" : ""}
+                    {p.id === game.hostId ? " 👑" : ""}
                   </strong>
                   <div>Score: {p.score ?? 0}</div>
                   {votes[p.name] && (
@@ -205,9 +217,10 @@ export default function Lobby() {
             )}
             {isHostNow  && game.phase === "playing" && (
               <button
-                onClick={() =>
+                onClick={() =>{
+                  if (!isHostNow) return;
                   socket.emit("start-voting", roomCode)
-                }
+                }}
               >
                 Start Voting
               </button>
