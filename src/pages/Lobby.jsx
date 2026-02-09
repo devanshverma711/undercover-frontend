@@ -10,7 +10,9 @@ export default function Lobby() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [mySocketId, setMySocketId] = useState(null);
-  const { name } = state || {};
+  const { name } = state || {}; 
+  const [hardMode, setHardMode] = useState(false);
+
   const phaseText = {
     lobby: "Waiting for players",
     playing: "Discuss the word",
@@ -54,6 +56,9 @@ export default function Lobby() {
 
     socket.on("state", (data) => {
       setGame(data);
+      if (data.mode) {
+        setHardMode(data.mode === "hard");
+      }
        if (data.phase === "lobby") {
         setMyRole(null);
         setMyWord(null);
@@ -117,7 +122,18 @@ export default function Lobby() {
         <div style={{ display: "flex", gap: 12, alignItems: "center",flexWrap: "wrap",justifyContent: "flex-end" }}>
           <div style={{ color: "#ddd" }}>You: {name}</div>
           <div style={styles.phaseBadge}>{phaseText[game.phase]}</div>
-
+          {game?.mode && (
+            <div
+              style={{
+                background: game.mode === "hard" ? "#7b1f1f" : "#1e293b",
+                padding: "6px 10px",
+                borderRadius: 6,
+                fontSize: 12,
+              }}
+            >
+              Mode: {game.mode.toUpperCase()}
+            </div>
+          )}
         </div>
       </div>
 
@@ -148,13 +164,10 @@ export default function Lobby() {
 
           {game?.message && (
             <div style={styles.messageBox}>
-              <strong>
-                {game.phase === "ended" && myRole === "undercover"
-                  ? "💀 You were caught by the civilians!"
-                  : game.message}
-              </strong>
+              <strong>{game.message}</strong>
             </div>
           )}
+
 
 
           <div
@@ -213,10 +226,34 @@ export default function Lobby() {
               );
             })}
           </div>
-
+          {isHostNow && game.phase === "lobby" && (
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                cursor: "pointer",
+                background: "#1e293b",
+                padding: "6px 10px",
+                borderRadius: 6
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={hardMode}
+                disabled={game.phase !== "lobby"}
+                onChange={(e) => setHardMode(e.target.checked)}
+              />
+              <span style={{ color: hardMode ? "#ff6b6b" : "#ddd" }}>
+                🔥 Hard Mode
+              </span>
+            </label>
+          )}
           <div style={styles.actionsRow}>
             {isHostNow  && game.phase === "lobby" && (
-              <button onClick={() => socket.emit("startGame")}>
+              <button
+                onClick={() =>socket.emit("startGame", 
+                {mode: hardMode ? "hard" : "normal",})}>
                 Start Game
               </button>
             )}
