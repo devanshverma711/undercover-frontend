@@ -219,6 +219,11 @@ export default function Lobby() {
                     {p.id === game.hostId ? " 👑" : ""}
                   </strong>
                   <div>Score: {p.score ?? 0}</div>
+                  {p.alive && game.phase === "playing" && p.speakingNumber && (
+                    <div style={{ marginTop: 6, fontSize: 13, opacity: 0.8 }}>
+                      🎤 Order: <strong>{p.speakingNumber}</strong>
+                    </div>
+                  )}
                   {votes[p.name] && (
                     <div>Votes: {votes[p.name]}</div>
                   )}
