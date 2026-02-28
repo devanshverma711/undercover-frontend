@@ -17,6 +17,7 @@ export default function Lobby() {
     lobby: "Waiting for players",
     playing: "Discuss the word",
     voting: "Vote the Undercover",
+    guessing: "Undercover is guessing the word",
     ended: "Round finished",
   };
 
@@ -29,6 +30,7 @@ export default function Lobby() {
   const [myRole, setMyRole] = useState(null);
   const [myWord, setMyWord] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [guess, setGuess] = useState("");
   const aliveCount = Array.isArray(game?.players)
   ? game.players.filter(p => p?.alive).length
   : 0;
@@ -218,7 +220,9 @@ export default function Lobby() {
                     {isYou ? " (You)" : ""}
                     {p.id === game.hostId ? " 👑" : ""}
                   </strong>
-                  <div>Score: {p.score ?? 0}</div>
+                  {game.phase === "ended" && (
+                    <div>Score: {p.score ?? 0}</div>
+                  )}
                   {p.alive && game.phase === "playing" && p.speakingNumber && (
                     <div style={{ marginTop: 6, fontSize: 13, opacity: 0.8 }}>
                       🎤 Order: <strong>{p.speakingNumber}</strong>
@@ -261,6 +265,41 @@ export default function Lobby() {
                 {mode: hardMode ? "hard" : "normal",})}>
                 Start Game
               </button>
+            )}
+            {/* 🧠 GUESSING PHASE UI */}
+            {game.phase === "guessing" && (
+              <div style={styles.messageBox}>
+                {game.guessingPlayerId === mySocketId ? (
+                  <>
+                    <div style={{ marginBottom: 8 }}>
+                      Type the civilian word to win:
+                    </div>
+
+                    <input
+                      value={guess}
+                      onChange={(e) => setGuess(e.target.value)}
+                      placeholder="Enter word..."
+                      style={{
+                        padding: 8,
+                        borderRadius: 6,
+                        border: "none",
+                        marginRight: 8,
+                      }}
+                    />
+
+                    <button
+                      onClick={() => {
+                        socket.emit("submitGuess", { guess });
+                        setGuess("");
+                      }}
+                    >
+                      Submit Guess
+                    </button>
+                  </>
+                ) : (
+                  <strong>🧠 Undercover is making a final guess...</strong>
+                )}
+              </div>
             )}
             {isHostNow  && game.phase === "playing" && (
               <button
